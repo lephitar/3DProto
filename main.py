@@ -12,13 +12,12 @@ def visualize_point_cloud(pcd):
     o3d.visualization.draw_geometries([pcd])
 
 
-def animate_explosion(point_cloud, duration=5, explosion_speed=1):
+def animate_explosion(point_cloud, duration=10, explosion_speed=0.01):
     pcd = point_cloud
     points = np.asarray(pcd.points)
     center = points.mean(axis=0)
     vectors = points - center
     normalized_vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
-    explosion_speed = 0.01
     vis = o3d.visualization.Visualizer()
     vis.create_window()
     vis.add_geometry(pcd)
@@ -36,7 +35,7 @@ def animate_explosion(point_cloud, duration=5, explosion_speed=1):
             break
 
         # Compute the new positions of the points
-        new_positions = points + explosion_speed * elapsed_time * normalized_vectors
+        new_positions = points + np.cos(elapsed_time) * explosion_speed * elapsed_time * normalized_vectors
         pcd.points = o3d.utility.Vector3dVector(new_positions)
 
         vis.update_geometry(pcd)
